@@ -8,10 +8,12 @@ import { algo, AlgorandClient } from '@algorandfoundation/algokit-utils'
 
 interface AppCallsInterface {
   openModal: boolean
+  alwaysWin: boolean
+  alwaysLose: boolean
   setModalState: (value: boolean) => void
 }
 
-const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
+const AppCalls = ({ openModal, alwaysWin, alwaysLose, setModalState }: AppCallsInterface) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [contractInput, setContractInput] = useState<string>('')
   const { enqueueSnackbar } = useSnackbar()
@@ -58,15 +60,25 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
       // This transaction is sent as a parameter to the roll transaction
       const paymentTxn = await appClient.algorand.createTransaction.payment({
         sender: activeAddress,
-        amount: algo(10),
+        amount: algo(Number(contractInput)),
         receiver: appClient.appAddress,
       })
 
-    const response = await appClient.send.rollAlwaysLose({ args: { pay: paymentTxn } }).catch((e: Error) => {
-      enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
-      setLoading(false)
-      return undefined
-    })
+    let response = undefined
+    if (alwaysWin) {
+      response = await appClient.send.rollAlwaysWin({ args: { pay: paymentTxn } }).catch((e: Error) => {
+        enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
+        setLoading(false)
+        return undefined
+      })
+    }
+    else if (alwaysLose) {
+      response = await appClient.send.rollAlwaysLose({ args: { pay: paymentTxn } }).catch((e: Error) => {
+        enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
+        setLoading(false)
+        return undefined
+      })
+    }
 /*
     const response = await appClient.send.hello({ args: { name: contractInput } }).catch((e: Error) => {
       enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
@@ -86,11 +98,11 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
   return (
     <dialog id="appcalls_modal" className={`modal ${openModal ? 'modal-open' : ''} bg-slate-200`}>
       <form method="dialog" className="modal-box">
-        <h3 className="font-bold text-lg">Say hello to your Algorand smart contract</h3>
+        <h3 className="font-bold text-lg">Please input the bet amount</h3>
         <br />
         <input
           type="text"
-          placeholder="Provide input to hello function"
+          placeholder="How much Algo to gamble?"
           className="input input-bordered w-full"
           value={contractInput}
           onChange={(e) => {
@@ -99,10 +111,10 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
         />
         <div className="modal-action ">
           <button className="btn" onClick={() => setModalState(!openModal)}>
-            Close
+            Cancel
           </button>
           <button className={`btn`} onClick={sendAppCall}>
-            {loading ? <span className="loading loading-spinner" /> : 'Send application call'}
+            {loading ? <span className="loading loading-spinner" /> : 'Roll'}
           </button>
         </div>
       </form>

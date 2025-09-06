@@ -13,13 +13,17 @@ const Home: React.FC<HomeProps> = () => {
   const [openDemoModal, setOpenDemoModal] = useState<boolean>(false)
   const [appCallsDemoModal, setAppCallsDemoModal] = useState<boolean>(false)
   const [openDiceRolling, setOpenDiceRolling] = useState<boolean>(false)
+  const [alwaysWin, setAlwaysWin] = useState<boolean>(false)
+  const [alwaysLose, setAlwaysLose] = useState<boolean>(false)
   const { activeAddress } = useWallet()
 
   const toggleWalletModal = () => {
     setOpenWalletModal(!openWalletModal)
   }
 
-  const toggleAppCallsModal = () => {
+  const toggleAppCallsModal = (alwaysWin, alwaysLose) => {
+    setAlwaysWin(alwaysWin)
+    setAlwaysLose(alwaysLose)
     setAppCallsDemoModal(!appCallsDemoModal)
   }
 
@@ -56,6 +60,11 @@ const Home: React.FC<HomeProps> = () => {
               Wallet Connection
             </button>
 
+            <div className="divider" />
+            <p className="py-6">
+              Following options are for dev testing purpose
+            </p>
+
             {activeAddress && (
               <button data-test-id="transactions-demo" className="btn m-2" onClick={toggleDemoModal}>
                 Transactions Demo
@@ -63,15 +72,21 @@ const Home: React.FC<HomeProps> = () => {
             )}
 
             {activeAddress && (
-              <button data-test-id="appcalls-demo" className="btn m-2" onClick={toggleAppCallsModal}>
-                Contract Interactions Demo
+              <button data-test-id="appcalls-demo" className="btn m-2" onClick={() => toggleAppCallsModal(false, true)}>
+                Roll to Lose
+              </button>
+            )}
+
+           {activeAddress && (
+              <button data-test-id="appcalls-demo" className="btn m-2" onClick={() => toggleAppCallsModal(true, false)}>
+                Roll to Win
               </button>
             )}
           </div>
 
           <ConnectWallet openModal={openWalletModal} closeModal={toggleWalletModal} />
           <Transact openModal={openDemoModal} setModalState={setOpenDemoModal} />
-          <AppCalls openModal={appCallsDemoModal} setModalState={setAppCallsDemoModal} />
+          <AppCalls openModal={appCallsDemoModal} alwaysWin={alwaysWin} alwaysLose={alwaysLose} setModalState={setAppCallsDemoModal} />
           <RollDice openModal={openDiceRolling} closeModal={setOpenDiceRolling} />
         </div>
       </div>
