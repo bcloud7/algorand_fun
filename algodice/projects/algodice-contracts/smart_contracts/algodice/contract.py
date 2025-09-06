@@ -1,8 +1,43 @@
-from algopy import ARC4Contract, String
+from algopy import (
+    Account,
+    ARC4Contract,
+    Asset,
+    Global,
+    LocalState,
+    Txn,
+    UInt64,
+    arc4,
+    gtxn,
+    itxn,
+    subroutine,
+    String,
+)
+
 from algopy.arc4 import abimethod
 
 
 class Algodice(ARC4Contract):
+
+    @arc4.abimethod
+    def roll_always_lose(self, pay: gtxn.PaymentTransaction) -> String:
+
+        # Verify payment transaction
+        assert pay.sender == Txn.sender, "payment sender must match transaction sender"
+        assert pay.amount >= 100000, "Minimum bet size is 0.1 ALGO"
+
+        return String("You Lose")
+
+    @arc4.abimethod
+    def roll_always_win(self, pay: gtxn.PaymentTransaction) -> String:
+        # Verify payment transaction
+        assert pay.sender == Txn.sender, "payment sender must match transaction sender"
+        assert pay.amount >= 100000, "Minimum bet size is 0.1 ALGO"
+        send_amount = pay.amount * UInt64(2) + UInt64(1000)
+        itxn.Payment(amount=send_amount, receiver=Txn.sender, fee=1000).submit()
+
+        return String("You Win")
+
+
     @abimethod()
     def hello(self, name: String) -> String:
-        return "Hello, " + name
+        return "Aha, " + name

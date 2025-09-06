@@ -3,33 +3,35 @@
 
 // algopy.arc4.ARC4Contract.approval_program() -> uint64:
 main:
-    // smart_contracts/algodice/contract.py:5
+    intcblock 1 100000 1000
+    bytecblock 0x151f7c75
+    // smart_contracts/algodice/contract.py:19
     // class Algodice(ARC4Contract):
     txn NumAppArgs
-    bz main_bare_routing@6
-    pushbytes 0x02bece11 // method "hello(string)string"
+    bz main_bare_routing@8
+    pushbytess 0x030afed9 0xd66b91bb 0x02bece11 // method "roll_always_lose(pay)string", method "roll_always_win(pay)string", method "hello(string)string"
     txna ApplicationArgs 0
-    match main_hello_route@3
+    match main_roll_always_lose_route@3 main_roll_always_win_route@4 main_hello_route@5
 
-main_after_if_else@10:
-    // smart_contracts/algodice/contract.py:5
+main_after_if_else@12:
+    // smart_contracts/algodice/contract.py:19
     // class Algodice(ARC4Contract):
     pushint 0 // 0
     return
 
-main_hello_route@3:
-    // smart_contracts/algodice/contract.py:6
+main_hello_route@5:
+    // smart_contracts/algodice/contract.py:41
     // @abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // smart_contracts/algodice/contract.py:5
+    // smart_contracts/algodice/contract.py:19
     // class Algodice(ARC4Contract):
     txna ApplicationArgs 1
     extract 2 0
-    // smart_contracts/algodice/contract.py:6
+    // smart_contracts/algodice/contract.py:41
     // @abimethod()
     callsub hello
     dup
@@ -38,34 +40,174 @@ main_hello_route@3:
     extract 6 2
     swap
     concat
-    pushbytes 0x151f7c75
+    bytec_0 // 0x151f7c75
     swap
     concat
     log
-    pushint 1 // 1
+    intc_0 // 1
     return
 
-main_bare_routing@6:
-    // smart_contracts/algodice/contract.py:5
+main_roll_always_win_route@4:
+    // smart_contracts/algodice/contract.py:30
+    // @arc4.abimethod
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/algodice/contract.py:19
+    // class Algodice(ARC4Contract):
+    txn GroupIndex
+    intc_0 // 1
+    -
+    dup
+    gtxns TypeEnum
+    intc_0 // pay
+    ==
+    assert // transaction type is pay
+    // smart_contracts/algodice/contract.py:30
+    // @arc4.abimethod
+    callsub roll_always_win
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_roll_always_lose_route@3:
+    // smart_contracts/algodice/contract.py:21
+    // @arc4.abimethod
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/algodice/contract.py:19
+    // class Algodice(ARC4Contract):
+    txn GroupIndex
+    intc_0 // 1
+    -
+    dup
+    gtxns TypeEnum
+    intc_0 // pay
+    ==
+    assert // transaction type is pay
+    // smart_contracts/algodice/contract.py:21
+    // @arc4.abimethod
+    callsub roll_always_lose
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_bare_routing@8:
+    // smart_contracts/algodice/contract.py:19
     // class Algodice(ARC4Contract):
     txn OnCompletion
-    bnz main_after_if_else@10
+    bnz main_after_if_else@12
     txn ApplicationID
     !
     assert // can only call when creating
-    pushint 1 // 1
+    intc_0 // 1
     return
+
+
+// smart_contracts.algodice.contract.Algodice.roll_always_lose(pay: uint64) -> bytes:
+roll_always_lose:
+    // smart_contracts/algodice/contract.py:21-22
+    // @arc4.abimethod
+    // def roll_always_lose(self, pay: gtxn.PaymentTransaction) -> String:
+    proto 1 1
+    // smart_contracts/algodice/contract.py:24-25
+    // # Verify payment transaction
+    // assert pay.sender == Txn.sender, "payment sender must match transaction sender"
+    frame_dig -1
+    gtxns Sender
+    txn Sender
+    ==
+    assert // payment sender must match transaction sender
+    // smart_contracts/algodice/contract.py:26
+    // assert pay.amount >= 100000, "Minimum bet size is 0.1 ALGO"
+    frame_dig -1
+    gtxns Amount
+    intc_1 // 100000
+    >=
+    assert // Minimum bet size is 0.1 ALGO
+    // smart_contracts/algodice/contract.py:28
+    // return String("You Lose")
+    pushbytes "You Lose"
+    retsub
+
+
+// smart_contracts.algodice.contract.Algodice.roll_always_win(pay: uint64) -> bytes:
+roll_always_win:
+    // smart_contracts/algodice/contract.py:30-31
+    // @arc4.abimethod
+    // def roll_always_win(self, pay: gtxn.PaymentTransaction) -> String:
+    proto 1 1
+    // smart_contracts/algodice/contract.py:32-33
+    // # Verify payment transaction
+    // assert pay.sender == Txn.sender, "payment sender must match transaction sender"
+    frame_dig -1
+    gtxns Sender
+    txn Sender
+    ==
+    assert // payment sender must match transaction sender
+    // smart_contracts/algodice/contract.py:34
+    // assert pay.amount >= 100000, "Minimum bet size is 0.1 ALGO"
+    frame_dig -1
+    gtxns Amount
+    dup
+    intc_1 // 100000
+    >=
+    assert // Minimum bet size is 0.1 ALGO
+    // smart_contracts/algodice/contract.py:35
+    // send_amount = pay.amount * UInt64(2) + UInt64(1000)
+    pushint 2 // 2
+    *
+    intc_2 // 1000
+    +
+    // smart_contracts/algodice/contract.py:36
+    // itxn.Payment(amount=send_amount, receiver=Txn.sender, fee=1000).submit()
+    itxn_begin
+    txn Sender
+    itxn_field Receiver
+    itxn_field Amount
+    intc_0 // pay
+    itxn_field TypeEnum
+    intc_2 // 1000
+    itxn_field Fee
+    itxn_submit
+    // smart_contracts/algodice/contract.py:38
+    // return String("You Win")
+    pushbytes "You Win"
+    retsub
 
 
 // smart_contracts.algodice.contract.Algodice.hello(name: bytes) -> bytes:
 hello:
-    // smart_contracts/algodice/contract.py:6-7
+    // smart_contracts/algodice/contract.py:41-42
     // @abimethod()
     // def hello(self, name: String) -> String:
     proto 1 1
-    // smart_contracts/algodice/contract.py:8
-    // return "Hello, " + name
-    pushbytes "Hello, "
+    // smart_contracts/algodice/contract.py:43
+    // return "Aha, " + name
+    pushbytes "Aha, "
     frame_dig -1
     concat
     retsub

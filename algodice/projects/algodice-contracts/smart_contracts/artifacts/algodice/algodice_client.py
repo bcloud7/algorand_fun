@@ -19,7 +19,7 @@ from algosdk.v2client.models import SimulateTraceConfig
 import algokit_utils
 from algokit_utils import AlgorandClient as _AlgoKitAlgorandClient
 
-_APP_SPEC_JSON = r"""{"arcs": [22, 28], "bareActions": {"call": [], "create": ["NoOp"]}, "methods": [{"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "string", "name": "name"}], "name": "hello", "returns": {"type": "string"}, "events": [], "readonly": false, "recommendations": {}}], "name": "Algodice", "state": {"keys": {"box": {}, "global": {}, "local": {}}, "maps": {"box": {}, "global": {}, "local": {}}, "schema": {"global": {"bytes": 0, "ints": 0}, "local": {"bytes": 0, "ints": 0}}}, "structs": {}, "byteCode": {"approval": "CjEbQQA0gAQCvs4RNhoAjgEAA4EAQzEZFEQxGEQ2GgFXAgCIACBJFRZXBgJMUIAEFR98dUxQsIEBQzEZQP/UMRgURIEBQ4oBAYAHSGVsbG8sIIv/UIk=", "clear": "CoEBQw=="}, "events": [], "networks": {}, "source": {"approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuYXBwcm92YWxfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hbGdvZGljZS9jb250cmFjdC5weTo1CiAgICAvLyBjbGFzcyBBbGdvZGljZShBUkM0Q29udHJhY3QpOgogICAgdHhuIE51bUFwcEFyZ3MKICAgIGJ6IG1haW5fYmFyZV9yb3V0aW5nQDYKICAgIHB1c2hieXRlcyAweDAyYmVjZTExIC8vIG1ldGhvZCAiaGVsbG8oc3RyaW5nKXN0cmluZyIKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDAKICAgIG1hdGNoIG1haW5faGVsbG9fcm91dGVAMwoKbWFpbl9hZnRlcl9pZl9lbHNlQDEwOgogICAgLy8gc21hcnRfY29udHJhY3RzL2FsZ29kaWNlL2NvbnRyYWN0LnB5OjUKICAgIC8vIGNsYXNzIEFsZ29kaWNlKEFSQzRDb250cmFjdCk6CiAgICBwdXNoaW50IDAgLy8gMAogICAgcmV0dXJuCgptYWluX2hlbGxvX3JvdXRlQDM6CiAgICAvLyBzbWFydF9jb250cmFjdHMvYWxnb2RpY2UvY29udHJhY3QucHk6NgogICAgLy8gQGFiaW1ldGhvZCgpCiAgICB0eG4gT25Db21wbGV0aW9uCiAgICAhCiAgICBhc3NlcnQgLy8gT25Db21wbGV0aW9uIGlzIG5vdCBOb09wCiAgICB0eG4gQXBwbGljYXRpb25JRAogICAgYXNzZXJ0IC8vIGNhbiBvbmx5IGNhbGwgd2hlbiBub3QgY3JlYXRpbmcKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hbGdvZGljZS9jb250cmFjdC5weTo1CiAgICAvLyBjbGFzcyBBbGdvZGljZShBUkM0Q29udHJhY3QpOgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZXh0cmFjdCAyIDAKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hbGdvZGljZS9jb250cmFjdC5weTo2CiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIGNhbGxzdWIgaGVsbG8KICAgIGR1cAogICAgbGVuCiAgICBpdG9iCiAgICBleHRyYWN0IDYgMgogICAgc3dhcAogICAgY29uY2F0CiAgICBwdXNoYnl0ZXMgMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIHB1c2hpbnQgMSAvLyAxCiAgICByZXR1cm4KCm1haW5fYmFyZV9yb3V0aW5nQDY6CiAgICAvLyBzbWFydF9jb250cmFjdHMvYWxnb2RpY2UvY29udHJhY3QucHk6NQogICAgLy8gY2xhc3MgQWxnb2RpY2UoQVJDNENvbnRyYWN0KToKICAgIHR4biBPbkNvbXBsZXRpb24KICAgIGJueiBtYWluX2FmdGVyX2lmX2Vsc2VAMTAKICAgIHR4biBBcHBsaWNhdGlvbklECiAgICAhCiAgICBhc3NlcnQgLy8gY2FuIG9ubHkgY2FsbCB3aGVuIGNyZWF0aW5nCiAgICBwdXNoaW50IDEgLy8gMQogICAgcmV0dXJuCgoKLy8gc21hcnRfY29udHJhY3RzLmFsZ29kaWNlLmNvbnRyYWN0LkFsZ29kaWNlLmhlbGxvKG5hbWU6IGJ5dGVzKSAtPiBieXRlczoKaGVsbG86CiAgICAvLyBzbWFydF9jb250cmFjdHMvYWxnb2RpY2UvY29udHJhY3QucHk6Ni03CiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIC8vIGRlZiBoZWxsbyhzZWxmLCBuYW1lOiBTdHJpbmcpIC0+IFN0cmluZzoKICAgIHByb3RvIDEgMQogICAgLy8gc21hcnRfY29udHJhY3RzL2FsZ29kaWNlL2NvbnRyYWN0LnB5OjgKICAgIC8vIHJldHVybiAiSGVsbG8sICIgKyBuYW1lCiAgICBwdXNoYnl0ZXMgIkhlbGxvLCAiCiAgICBmcmFtZV9kaWcgLTEKICAgIGNvbmNhdAogICAgcmV0c3ViCg==", "clear": "I3ByYWdtYSB2ZXJzaW9uIDEwCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuY2xlYXJfc3RhdGVfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIHB1c2hpbnQgMSAvLyAxCiAgICByZXR1cm4K"}, "sourceInfo": {"approval": {"pcOffsetMethod": "none", "sourceInfo": [{"pc": [25], "errorMessage": "OnCompletion is not NoOp"}, {"pc": [66], "errorMessage": "can only call when creating"}, {"pc": [28], "errorMessage": "can only call when not creating"}]}, "clear": {"pcOffsetMethod": "none", "sourceInfo": []}}, "templateVariables": {}}"""
+_APP_SPEC_JSON = r"""{"arcs": [22, 28], "bareActions": {"call": [], "create": ["NoOp"]}, "methods": [{"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "pay", "name": "pay"}], "name": "roll_always_lose", "returns": {"type": "string"}, "events": [], "readonly": false, "recommendations": {}}, {"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "pay", "name": "pay"}], "name": "roll_always_win", "returns": {"type": "string"}, "events": [], "readonly": false, "recommendations": {}}, {"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "string", "name": "name"}], "name": "hello", "returns": {"type": "string"}, "events": [], "readonly": false, "recommendations": {}}], "name": "Algodice", "state": {"keys": {"box": {}, "global": {}, "local": {}}, "maps": {"box": {}, "global": {}, "local": {}}, "schema": {"global": {"bytes": 0, "ints": 0}, "local": {"bytes": 0, "ints": 0}}}, "structs": {}, "byteCode": {"approval": "CiADAaCNBugHJgEEFR98dTEbQQCBggMEAwr+2QTWa5G7BAK+zhE2GgCOAwBDACEAA4EAQzEZFEQxGEQ2GgFXAgCIAKpJFRZXBgJMUChMULAiQzEZFEQxGEQxFiIJSTgQIhJEiABYSRUWVwYCTFAoTFCwIkMxGRREMRhEMRYiCUk4ECISRIgAGUkVFlcGAkxQKExQsCJDMRlA/5YxGBREIkOKAQGL/zgAMQASRIv/OAgjD0SACFlvdSBMb3NliYoBAYv/OAAxABJEi/84CEkjD0SBAgskCLExALIHsggishAksgGzgAdZb3UgV2luiYoBAYAFQWhhLCCL/1CJ", "clear": "CoEBQw=="}, "events": [], "networks": {}, "source": {"approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuYXBwcm92YWxfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIGludGNibG9jayAxIDEwMDAwMCAxMDAwCiAgICBieXRlY2Jsb2NrIDB4MTUxZjdjNzUKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hbGdvZGljZS9jb250cmFjdC5weToxOQogICAgLy8gY2xhc3MgQWxnb2RpY2UoQVJDNENvbnRyYWN0KToKICAgIHR4biBOdW1BcHBBcmdzCiAgICBieiBtYWluX2JhcmVfcm91dGluZ0A4CiAgICBwdXNoYnl0ZXNzIDB4MDMwYWZlZDkgMHhkNjZiOTFiYiAweDAyYmVjZTExIC8vIG1ldGhvZCAicm9sbF9hbHdheXNfbG9zZShwYXkpc3RyaW5nIiwgbWV0aG9kICJyb2xsX2Fsd2F5c193aW4ocGF5KXN0cmluZyIsIG1ldGhvZCAiaGVsbG8oc3RyaW5nKXN0cmluZyIKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDAKICAgIG1hdGNoIG1haW5fcm9sbF9hbHdheXNfbG9zZV9yb3V0ZUAzIG1haW5fcm9sbF9hbHdheXNfd2luX3JvdXRlQDQgbWFpbl9oZWxsb19yb3V0ZUA1CgptYWluX2FmdGVyX2lmX2Vsc2VAMTI6CiAgICAvLyBzbWFydF9jb250cmFjdHMvYWxnb2RpY2UvY29udHJhY3QucHk6MTkKICAgIC8vIGNsYXNzIEFsZ29kaWNlKEFSQzRDb250cmFjdCk6CiAgICBwdXNoaW50IDAgLy8gMAogICAgcmV0dXJuCgptYWluX2hlbGxvX3JvdXRlQDU6CiAgICAvLyBzbWFydF9jb250cmFjdHMvYWxnb2RpY2UvY29udHJhY3QucHk6NDEKICAgIC8vIEBhYmltZXRob2QoKQogICAgdHhuIE9uQ29tcGxldGlvbgogICAgIQogICAgYXNzZXJ0IC8vIE9uQ29tcGxldGlvbiBpcyBub3QgTm9PcAogICAgdHhuIEFwcGxpY2F0aW9uSUQKICAgIGFzc2VydCAvLyBjYW4gb25seSBjYWxsIHdoZW4gbm90IGNyZWF0aW5nCiAgICAvLyBzbWFydF9jb250cmFjdHMvYWxnb2RpY2UvY29udHJhY3QucHk6MTkKICAgIC8vIGNsYXNzIEFsZ29kaWNlKEFSQzRDb250cmFjdCk6CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBleHRyYWN0IDIgMAogICAgLy8gc21hcnRfY29udHJhY3RzL2FsZ29kaWNlL2NvbnRyYWN0LnB5OjQxCiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIGNhbGxzdWIgaGVsbG8KICAgIGR1cAogICAgbGVuCiAgICBpdG9iCiAgICBleHRyYWN0IDYgMgogICAgc3dhcAogICAgY29uY2F0CiAgICBieXRlY18wIC8vIDB4MTUxZjdjNzUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICBpbnRjXzAgLy8gMQogICAgcmV0dXJuCgptYWluX3JvbGxfYWx3YXlzX3dpbl9yb3V0ZUA0OgogICAgLy8gc21hcnRfY29udHJhY3RzL2FsZ29kaWNlL2NvbnRyYWN0LnB5OjMwCiAgICAvLyBAYXJjNC5hYmltZXRob2QKICAgIHR4biBPbkNvbXBsZXRpb24KICAgICEKICAgIGFzc2VydCAvLyBPbkNvbXBsZXRpb24gaXMgbm90IE5vT3AKICAgIHR4biBBcHBsaWNhdGlvbklECiAgICBhc3NlcnQgLy8gY2FuIG9ubHkgY2FsbCB3aGVuIG5vdCBjcmVhdGluZwogICAgLy8gc21hcnRfY29udHJhY3RzL2FsZ29kaWNlL2NvbnRyYWN0LnB5OjE5CiAgICAvLyBjbGFzcyBBbGdvZGljZShBUkM0Q29udHJhY3QpOgogICAgdHhuIEdyb3VwSW5kZXgKICAgIGludGNfMCAvLyAxCiAgICAtCiAgICBkdXAKICAgIGd0eG5zIFR5cGVFbnVtCiAgICBpbnRjXzAgLy8gcGF5CiAgICA9PQogICAgYXNzZXJ0IC8vIHRyYW5zYWN0aW9uIHR5cGUgaXMgcGF5CiAgICAvLyBzbWFydF9jb250cmFjdHMvYWxnb2RpY2UvY29udHJhY3QucHk6MzAKICAgIC8vIEBhcmM0LmFiaW1ldGhvZAogICAgY2FsbHN1YiByb2xsX2Fsd2F5c193aW4KICAgIGR1cAogICAgbGVuCiAgICBpdG9iCiAgICBleHRyYWN0IDYgMgogICAgc3dhcAogICAgY29uY2F0CiAgICBieXRlY18wIC8vIDB4MTUxZjdjNzUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICBpbnRjXzAgLy8gMQogICAgcmV0dXJuCgptYWluX3JvbGxfYWx3YXlzX2xvc2Vfcm91dGVAMzoKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hbGdvZGljZS9jb250cmFjdC5weToyMQogICAgLy8gQGFyYzQuYWJpbWV0aG9kCiAgICB0eG4gT25Db21wbGV0aW9uCiAgICAhCiAgICBhc3NlcnQgLy8gT25Db21wbGV0aW9uIGlzIG5vdCBOb09wCiAgICB0eG4gQXBwbGljYXRpb25JRAogICAgYXNzZXJ0IC8vIGNhbiBvbmx5IGNhbGwgd2hlbiBub3QgY3JlYXRpbmcKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hbGdvZGljZS9jb250cmFjdC5weToxOQogICAgLy8gY2xhc3MgQWxnb2RpY2UoQVJDNENvbnRyYWN0KToKICAgIHR4biBHcm91cEluZGV4CiAgICBpbnRjXzAgLy8gMQogICAgLQogICAgZHVwCiAgICBndHhucyBUeXBlRW51bQogICAgaW50Y18wIC8vIHBheQogICAgPT0KICAgIGFzc2VydCAvLyB0cmFuc2FjdGlvbiB0eXBlIGlzIHBheQogICAgLy8gc21hcnRfY29udHJhY3RzL2FsZ29kaWNlL2NvbnRyYWN0LnB5OjIxCiAgICAvLyBAYXJjNC5hYmltZXRob2QKICAgIGNhbGxzdWIgcm9sbF9hbHdheXNfbG9zZQogICAgZHVwCiAgICBsZW4KICAgIGl0b2IKICAgIGV4dHJhY3QgNiAyCiAgICBzd2FwCiAgICBjb25jYXQKICAgIGJ5dGVjXzAgLy8gMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIGludGNfMCAvLyAxCiAgICByZXR1cm4KCm1haW5fYmFyZV9yb3V0aW5nQDg6CiAgICAvLyBzbWFydF9jb250cmFjdHMvYWxnb2RpY2UvY29udHJhY3QucHk6MTkKICAgIC8vIGNsYXNzIEFsZ29kaWNlKEFSQzRDb250cmFjdCk6CiAgICB0eG4gT25Db21wbGV0aW9uCiAgICBibnogbWFpbl9hZnRlcl9pZl9lbHNlQDEyCiAgICB0eG4gQXBwbGljYXRpb25JRAogICAgIQogICAgYXNzZXJ0IC8vIGNhbiBvbmx5IGNhbGwgd2hlbiBjcmVhdGluZwogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNtYXJ0X2NvbnRyYWN0cy5hbGdvZGljZS5jb250cmFjdC5BbGdvZGljZS5yb2xsX2Fsd2F5c19sb3NlKHBheTogdWludDY0KSAtPiBieXRlczoKcm9sbF9hbHdheXNfbG9zZToKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hbGdvZGljZS9jb250cmFjdC5weToyMS0yMgogICAgLy8gQGFyYzQuYWJpbWV0aG9kCiAgICAvLyBkZWYgcm9sbF9hbHdheXNfbG9zZShzZWxmLCBwYXk6IGd0eG4uUGF5bWVudFRyYW5zYWN0aW9uKSAtPiBTdHJpbmc6CiAgICBwcm90byAxIDEKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hbGdvZGljZS9jb250cmFjdC5weToyNC0yNQogICAgLy8gIyBWZXJpZnkgcGF5bWVudCB0cmFuc2FjdGlvbgogICAgLy8gYXNzZXJ0IHBheS5zZW5kZXIgPT0gVHhuLnNlbmRlciwgInBheW1lbnQgc2VuZGVyIG11c3QgbWF0Y2ggdHJhbnNhY3Rpb24gc2VuZGVyIgogICAgZnJhbWVfZGlnIC0xCiAgICBndHhucyBTZW5kZXIKICAgIHR4biBTZW5kZXIKICAgID09CiAgICBhc3NlcnQgLy8gcGF5bWVudCBzZW5kZXIgbXVzdCBtYXRjaCB0cmFuc2FjdGlvbiBzZW5kZXIKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hbGdvZGljZS9jb250cmFjdC5weToyNgogICAgLy8gYXNzZXJ0IHBheS5hbW91bnQgPj0gMTAwMDAwLCAiTWluaW11bSBiZXQgc2l6ZSBpcyAwLjEgQUxHTyIKICAgIGZyYW1lX2RpZyAtMQogICAgZ3R4bnMgQW1vdW50CiAgICBpbnRjXzEgLy8gMTAwMDAwCiAgICA+PQogICAgYXNzZXJ0IC8vIE1pbmltdW0gYmV0IHNpemUgaXMgMC4xIEFMR08KICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hbGdvZGljZS9jb250cmFjdC5weToyOAogICAgLy8gcmV0dXJuIFN0cmluZygiWW91IExvc2UiKQogICAgcHVzaGJ5dGVzICJZb3UgTG9zZSIKICAgIHJldHN1YgoKCi8vIHNtYXJ0X2NvbnRyYWN0cy5hbGdvZGljZS5jb250cmFjdC5BbGdvZGljZS5yb2xsX2Fsd2F5c193aW4ocGF5OiB1aW50NjQpIC0+IGJ5dGVzOgpyb2xsX2Fsd2F5c193aW46CiAgICAvLyBzbWFydF9jb250cmFjdHMvYWxnb2RpY2UvY29udHJhY3QucHk6MzAtMzEKICAgIC8vIEBhcmM0LmFiaW1ldGhvZAogICAgLy8gZGVmIHJvbGxfYWx3YXlzX3dpbihzZWxmLCBwYXk6IGd0eG4uUGF5bWVudFRyYW5zYWN0aW9uKSAtPiBTdHJpbmc6CiAgICBwcm90byAxIDEKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hbGdvZGljZS9jb250cmFjdC5weTozMi0zMwogICAgLy8gIyBWZXJpZnkgcGF5bWVudCB0cmFuc2FjdGlvbgogICAgLy8gYXNzZXJ0IHBheS5zZW5kZXIgPT0gVHhuLnNlbmRlciwgInBheW1lbnQgc2VuZGVyIG11c3QgbWF0Y2ggdHJhbnNhY3Rpb24gc2VuZGVyIgogICAgZnJhbWVfZGlnIC0xCiAgICBndHhucyBTZW5kZXIKICAgIHR4biBTZW5kZXIKICAgID09CiAgICBhc3NlcnQgLy8gcGF5bWVudCBzZW5kZXIgbXVzdCBtYXRjaCB0cmFuc2FjdGlvbiBzZW5kZXIKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hbGdvZGljZS9jb250cmFjdC5weTozNAogICAgLy8gYXNzZXJ0IHBheS5hbW91bnQgPj0gMTAwMDAwLCAiTWluaW11bSBiZXQgc2l6ZSBpcyAwLjEgQUxHTyIKICAgIGZyYW1lX2RpZyAtMQogICAgZ3R4bnMgQW1vdW50CiAgICBkdXAKICAgIGludGNfMSAvLyAxMDAwMDAKICAgID49CiAgICBhc3NlcnQgLy8gTWluaW11bSBiZXQgc2l6ZSBpcyAwLjEgQUxHTwogICAgLy8gc21hcnRfY29udHJhY3RzL2FsZ29kaWNlL2NvbnRyYWN0LnB5OjM1CiAgICAvLyBzZW5kX2Ftb3VudCA9IHBheS5hbW91bnQgKiBVSW50NjQoMikgKyBVSW50NjQoMTAwMCkKICAgIHB1c2hpbnQgMiAvLyAyCiAgICAqCiAgICBpbnRjXzIgLy8gMTAwMAogICAgKwogICAgLy8gc21hcnRfY29udHJhY3RzL2FsZ29kaWNlL2NvbnRyYWN0LnB5OjM2CiAgICAvLyBpdHhuLlBheW1lbnQoYW1vdW50PXNlbmRfYW1vdW50LCByZWNlaXZlcj1UeG4uc2VuZGVyLCBmZWU9MTAwMCkuc3VibWl0KCkKICAgIGl0eG5fYmVnaW4KICAgIHR4biBTZW5kZXIKICAgIGl0eG5fZmllbGQgUmVjZWl2ZXIKICAgIGl0eG5fZmllbGQgQW1vdW50CiAgICBpbnRjXzAgLy8gcGF5CiAgICBpdHhuX2ZpZWxkIFR5cGVFbnVtCiAgICBpbnRjXzIgLy8gMTAwMAogICAgaXR4bl9maWVsZCBGZWUKICAgIGl0eG5fc3VibWl0CiAgICAvLyBzbWFydF9jb250cmFjdHMvYWxnb2RpY2UvY29udHJhY3QucHk6MzgKICAgIC8vIHJldHVybiBTdHJpbmcoIllvdSBXaW4iKQogICAgcHVzaGJ5dGVzICJZb3UgV2luIgogICAgcmV0c3ViCgoKLy8gc21hcnRfY29udHJhY3RzLmFsZ29kaWNlLmNvbnRyYWN0LkFsZ29kaWNlLmhlbGxvKG5hbWU6IGJ5dGVzKSAtPiBieXRlczoKaGVsbG86CiAgICAvLyBzbWFydF9jb250cmFjdHMvYWxnb2RpY2UvY29udHJhY3QucHk6NDEtNDIKICAgIC8vIEBhYmltZXRob2QoKQogICAgLy8gZGVmIGhlbGxvKHNlbGYsIG5hbWU6IFN0cmluZykgLT4gU3RyaW5nOgogICAgcHJvdG8gMSAxCiAgICAvLyBzbWFydF9jb250cmFjdHMvYWxnb2RpY2UvY29udHJhY3QucHk6NDMKICAgIC8vIHJldHVybiAiQWhhLCAiICsgbmFtZQogICAgcHVzaGJ5dGVzICJBaGEsICIKICAgIGZyYW1lX2RpZyAtMQogICAgY29uY2F0CiAgICByZXRzdWIK", "clear": "I3ByYWdtYSB2ZXJzaW9uIDEwCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuY2xlYXJfc3RhdGVfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIHB1c2hpbnQgMSAvLyAxCiAgICByZXR1cm4K"}, "sourceInfo": {"approval": {"pcOffsetMethod": "none", "sourceInfo": [{"pc": [178, 208], "errorMessage": "Minimum bet size is 0.1 ALGO"}, {"pc": [55, 85, 119], "errorMessage": "OnCompletion is not NoOp"}, {"pc": [158], "errorMessage": "can only call when creating"}, {"pc": [58, 88, 122], "errorMessage": "can only call when not creating"}, {"pc": [171, 200], "errorMessage": "payment sender must match transaction sender"}, {"pc": [98, 132], "errorMessage": "transaction type is pay"}]}, "clear": {"pcOffsetMethod": "none", "sourceInfo": []}}, "templateVariables": {}}"""
 APP_SPEC = algokit_utils.Arc56Contract.from_json(_APP_SPEC_JSON)
 
 def _parse_abi_args(args: object | None = None) -> list[object] | None:
@@ -65,6 +65,24 @@ def _init_dataclass(cls: type, data: dict) -> object:
     return cls(**field_values)
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
+class RollAlwaysLoseArgs:
+    """Dataclass for roll_always_lose arguments"""
+    pay: algokit_utils.AppMethodCallTransactionArgument
+
+    @property
+    def abi_method_signature(self) -> str:
+        return "roll_always_lose(pay)string"
+
+@dataclasses.dataclass(frozen=True, kw_only=True)
+class RollAlwaysWinArgs:
+    """Dataclass for roll_always_win arguments"""
+    pay: algokit_utils.AppMethodCallTransactionArgument
+
+    @property
+    def abi_method_signature(self) -> str:
+        return "roll_always_win(pay)string"
+
+@dataclasses.dataclass(frozen=True, kw_only=True)
 class HelloArgs:
     """Dataclass for hello arguments"""
     name: str
@@ -77,6 +95,32 @@ class HelloArgs:
 class AlgodiceParams:
     def __init__(self, app_client: algokit_utils.AppClient):
         self.app_client = app_client
+
+    def roll_always_lose(
+        self,
+        args: tuple[algokit_utils.AppMethodCallTransactionArgument] | RollAlwaysLoseArgs,
+        params: algokit_utils.CommonAppCallParams | None = None
+    ) -> algokit_utils.AppCallMethodCallParams:
+        method_args = _parse_abi_args(args)
+        params = params or algokit_utils.CommonAppCallParams()
+        return self.app_client.params.call(algokit_utils.AppClientMethodCallParams(**{
+            **dataclasses.asdict(params),
+            "method": "roll_always_lose(pay)string",
+            "args": method_args,
+        }))
+
+    def roll_always_win(
+        self,
+        args: tuple[algokit_utils.AppMethodCallTransactionArgument] | RollAlwaysWinArgs,
+        params: algokit_utils.CommonAppCallParams | None = None
+    ) -> algokit_utils.AppCallMethodCallParams:
+        method_args = _parse_abi_args(args)
+        params = params or algokit_utils.CommonAppCallParams()
+        return self.app_client.params.call(algokit_utils.AppClientMethodCallParams(**{
+            **dataclasses.asdict(params),
+            "method": "roll_always_win(pay)string",
+            "args": method_args,
+        }))
 
     def hello(
         self,
@@ -106,6 +150,32 @@ class AlgodiceCreateTransactionParams:
     def __init__(self, app_client: algokit_utils.AppClient):
         self.app_client = app_client
 
+    def roll_always_lose(
+        self,
+        args: tuple[algokit_utils.AppMethodCallTransactionArgument] | RollAlwaysLoseArgs,
+        params: algokit_utils.CommonAppCallParams | None = None
+    ) -> algokit_utils.BuiltTransactions:
+        method_args = _parse_abi_args(args)
+        params = params or algokit_utils.CommonAppCallParams()
+        return self.app_client.create_transaction.call(algokit_utils.AppClientMethodCallParams(**{
+            **dataclasses.asdict(params),
+            "method": "roll_always_lose(pay)string",
+            "args": method_args,
+        }))
+
+    def roll_always_win(
+        self,
+        args: tuple[algokit_utils.AppMethodCallTransactionArgument] | RollAlwaysWinArgs,
+        params: algokit_utils.CommonAppCallParams | None = None
+    ) -> algokit_utils.BuiltTransactions:
+        method_args = _parse_abi_args(args)
+        params = params or algokit_utils.CommonAppCallParams()
+        return self.app_client.create_transaction.call(algokit_utils.AppClientMethodCallParams(**{
+            **dataclasses.asdict(params),
+            "method": "roll_always_win(pay)string",
+            "args": method_args,
+        }))
+
     def hello(
         self,
         args: tuple[str] | HelloArgs,
@@ -133,6 +203,38 @@ class AlgodiceCreateTransactionParams:
 class AlgodiceSend:
     def __init__(self, app_client: algokit_utils.AppClient):
         self.app_client = app_client
+
+    def roll_always_lose(
+        self,
+        args: tuple[algokit_utils.AppMethodCallTransactionArgument] | RollAlwaysLoseArgs,
+        params: algokit_utils.CommonAppCallParams | None = None,
+        send_params: algokit_utils.SendParams | None = None
+    ) -> algokit_utils.SendAppTransactionResult[str]:
+        method_args = _parse_abi_args(args)
+        params = params or algokit_utils.CommonAppCallParams()
+        response = self.app_client.send.call(algokit_utils.AppClientMethodCallParams(**{
+            **dataclasses.asdict(params),
+            "method": "roll_always_lose(pay)string",
+            "args": method_args,
+        }), send_params=send_params)
+        parsed_response = response
+        return typing.cast(algokit_utils.SendAppTransactionResult[str], parsed_response)
+
+    def roll_always_win(
+        self,
+        args: tuple[algokit_utils.AppMethodCallTransactionArgument] | RollAlwaysWinArgs,
+        params: algokit_utils.CommonAppCallParams | None = None,
+        send_params: algokit_utils.SendParams | None = None
+    ) -> algokit_utils.SendAppTransactionResult[str]:
+        method_args = _parse_abi_args(args)
+        params = params or algokit_utils.CommonAppCallParams()
+        response = self.app_client.send.call(algokit_utils.AppClientMethodCallParams(**{
+            **dataclasses.asdict(params),
+            "method": "roll_always_win(pay)string",
+            "args": method_args,
+        }), send_params=send_params)
+        parsed_response = response
+        return typing.cast(algokit_utils.SendAppTransactionResult[str], parsed_response)
 
     def hello(
         self,
@@ -310,6 +412,18 @@ class AlgodiceClient:
     def new_group(self) -> "AlgodiceComposer":
         return AlgodiceComposer(self)
 
+    @typing.overload
+    def decode_return_value(
+        self,
+        method: typing.Literal["roll_always_lose(pay)string"],
+        return_value: algokit_utils.ABIReturn | None
+    ) -> str | None: ...
+    @typing.overload
+    def decode_return_value(
+        self,
+        method: typing.Literal["roll_always_win(pay)string"],
+        return_value: algokit_utils.ABIReturn | None
+    ) -> str | None: ...
     @typing.overload
     def decode_return_value(
         self,
@@ -498,6 +612,46 @@ class AlgodiceFactoryCreateParams:
             algokit_utils.AppFactoryCreateParams(**dataclasses.asdict(params)),
             compilation_params=compilation_params)
 
+    def roll_always_lose(
+        self,
+        args: tuple[algokit_utils.AppMethodCallTransactionArgument] | RollAlwaysLoseArgs,
+        *,
+        params: algokit_utils.CommonAppCallCreateParams | None = None,
+        compilation_params: algokit_utils.AppClientCompilationParams | None = None
+    ) -> algokit_utils.AppCreateMethodCallParams:
+        """Creates a new instance using the roll_always_lose(pay)string ABI method"""
+        params = params or algokit_utils.CommonAppCallCreateParams()
+        return self.app_factory.params.create(
+            algokit_utils.AppFactoryCreateMethodCallParams(
+                **{
+                **dataclasses.asdict(params),
+                "method": "roll_always_lose(pay)string",
+                "args": _parse_abi_args(args),
+                }
+            ),
+            compilation_params=compilation_params
+        )
+
+    def roll_always_win(
+        self,
+        args: tuple[algokit_utils.AppMethodCallTransactionArgument] | RollAlwaysWinArgs,
+        *,
+        params: algokit_utils.CommonAppCallCreateParams | None = None,
+        compilation_params: algokit_utils.AppClientCompilationParams | None = None
+    ) -> algokit_utils.AppCreateMethodCallParams:
+        """Creates a new instance using the roll_always_win(pay)string ABI method"""
+        params = params or algokit_utils.CommonAppCallCreateParams()
+        return self.app_factory.params.create(
+            algokit_utils.AppFactoryCreateMethodCallParams(
+                **{
+                **dataclasses.asdict(params),
+                "method": "roll_always_win(pay)string",
+                "args": _parse_abi_args(args),
+                }
+            ),
+            compilation_params=compilation_params
+        )
+
     def hello(
         self,
         args: tuple[str] | HelloArgs,
@@ -618,6 +772,42 @@ class AlgodiceComposer:
         self.client = client
         self._composer = client.algorand.new_group()
         self._result_mappers: list[typing.Callable[[algokit_utils.ABIReturn | None], object] | None] = []
+
+    def roll_always_lose(
+        self,
+        args: tuple[algokit_utils.AppMethodCallTransactionArgument] | RollAlwaysLoseArgs,
+        params: algokit_utils.CommonAppCallParams | None = None
+    ) -> "AlgodiceComposer":
+        self._composer.add_app_call_method_call(
+            self.client.params.roll_always_lose(
+                args=args,
+                params=params,
+            )
+        )
+        self._result_mappers.append(
+            lambda v: self.client.decode_return_value(
+                "roll_always_lose(pay)string", v
+            )
+        )
+        return self
+
+    def roll_always_win(
+        self,
+        args: tuple[algokit_utils.AppMethodCallTransactionArgument] | RollAlwaysWinArgs,
+        params: algokit_utils.CommonAppCallParams | None = None
+    ) -> "AlgodiceComposer":
+        self._composer.add_app_call_method_call(
+            self.client.params.roll_always_win(
+                args=args,
+                params=params,
+            )
+        )
+        self._result_mappers.append(
+            lambda v: self.client.decode_return_value(
+                "roll_always_win(pay)string", v
+            )
+        )
+        return self
 
     def hello(
         self,
