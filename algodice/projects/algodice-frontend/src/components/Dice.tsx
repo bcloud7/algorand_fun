@@ -1,12 +1,12 @@
 import { useWallet, Wallet, WalletId } from '@txnlab/use-wallet-react'
-import Account from './Account'
+import DiceDescription from './DiceDescription'
 
-interface ConnectWalletInterface {
+interface DiceInterface {
   openModal: boolean
   closeModal: () => void
 }
 
-const ConnectWallet = ({ openModal, closeModal }: ConnectWalletInterface) => {
+const RollDice = ({ openModal, closeModal }: DiceInterface) => {
   const { wallets, activeAddress } = useWallet()
 
   const isKmd = (wallet: Wallet) => wallet.id === WalletId.KMD
@@ -14,12 +14,12 @@ const ConnectWallet = ({ openModal, closeModal }: ConnectWalletInterface) => {
   return (
     <dialog id="connect_wallet_modal" className={`modal ${openModal ? 'modal-open' : ''}`} style={{ display: openModal ? 'block' : 'none' }}>
       <form method="dialog" className="modal-box">
-        <h3 className="font-bold text-2xl">Select wallet provider</h3>
+        <h3 className="font-bold text-2xl">Roll dice!</h3>
 
         <div className="grid m-2 pt-5">
           {activeAddress && (
             <>
-              <Account />
+              <DiceDescription />
               <div className="divider" />
             </>
           )}
@@ -41,7 +41,7 @@ const ConnectWallet = ({ openModal, closeModal }: ConnectWalletInterface) => {
                     style={{ objectFit: 'contain', width: '30px', height: 'auto' }}
                   />
                 )}
-                <span>{isKmd(wallet) ? 'LocalNet Wallet' : wallet.metadata.name}</span>
+                <span>{isKmd(wallet) ? 'Connect a wallet first!' : wallet.metadata.name}</span>
               </button>
             ))}
         </div>
@@ -61,21 +61,10 @@ const ConnectWallet = ({ openModal, closeModal }: ConnectWalletInterface) => {
               className="btn btn-warning"
               data-test-id="logout"
               onClick={async () => {
-                if (wallets) {
-                  const activeWallet = wallets.find((w) => w.isActive)
-                  if (activeWallet) {
-                    await activeWallet.disconnect()
-                  } else {
-                    // Required for logout/cleanup of inactive providers
-                    // For instance, when you login to localnet wallet and switch network
-                    // to testnet/mainnet or vice verse.
-                    localStorage.removeItem('@txnlab/use-wallet:v3')
-                    window.location.reload()
-                  }
-                }
+                //dice
               }}
             >
-              Logout
+              Roll!!!
             </button>
           )}
         </div>
@@ -83,4 +72,4 @@ const ConnectWallet = ({ openModal, closeModal }: ConnectWalletInterface) => {
     </dialog>
   )
 }
-export default ConnectWallet
+export default RollDice

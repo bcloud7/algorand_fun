@@ -46,7 +46,7 @@ const Transact = ({ openModal, setModalState }: TransactInterface) => {
   }
 
   return (
-    <dialog id="transact_modal" className={`modal ${openModal ? 'modal-open' : ''} bg-slate-200`}>
+    <dialog id="transact_modal" className={`modal ${openModal ? 'modal-open' : ''} bg-slate-200`} style={{ display: openModal ? 'block' : 'none' }}>
       <form method="dialog" className="modal-box">
         <h3 className="font-bold text-lg">Send payment transaction</h3>
         <br />
@@ -60,7 +60,19 @@ const Transact = ({ openModal, setModalState }: TransactInterface) => {
             setReceiverAddress(e.target.value)
           }}
         />
-        <div className="modal-action ">
+        <br />
+        <br />
+        <input
+          type="text"
+          data-test-id="receiver-address"
+          placeholder="Provide bid amount"
+          className="input input-bordered w-full"
+          value={receiverAddress}
+          onChange={(e) => {
+            setReceiverAddress(e.target.value)
+          }}
+        />
+        <div className="modal-action grid">
           <button className="btn" onClick={() => setModalState(!openModal)}>
             Close
           </button>

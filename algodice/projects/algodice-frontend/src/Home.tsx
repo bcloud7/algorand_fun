@@ -3,14 +3,23 @@ import { useWallet } from '@txnlab/use-wallet-react'
 import React, { useState } from 'react'
 import ConnectWallet from './components/ConnectWallet'
 import Transact from './components/Transact'
-import AppCalls from './components/AppCalls'
+import RollDice from './components/Dice'
 
 interface HomeProps {}
+
+function getRandomInt(min: number, max: number): number {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+const roll = getRandomInt(1, 6);
+console.log(`You rolled: ${roll}`);
 
 const Home: React.FC<HomeProps> = () => {
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false)
   const [openDemoModal, setOpenDemoModal] = useState<boolean>(false)
-  const [appCallsDemoModal, setAppCallsDemoModal] = useState<boolean>(false)
+  const [openDiceRolling, setOpenDiceRolling] = useState<boolean>(false)
   const { activeAddress } = useWallet()
 
   const toggleWalletModal = () => {
@@ -21,8 +30,8 @@ const Home: React.FC<HomeProps> = () => {
     setOpenDemoModal(!openDemoModal)
   }
 
-  const toggleAppCallsModal = () => {
-    setAppCallsDemoModal(!appCallsDemoModal)
+  const toggleDiceRolling = () => {
+    setOpenDiceRolling(!openDiceRolling)
   }
 
   return (
@@ -30,21 +39,20 @@ const Home: React.FC<HomeProps> = () => {
       <div className="hero-content text-center rounded-lg p-6 max-w-md bg-white mx-auto">
         <div className="max-w-md">
           <h1 className="text-4xl">
-            Welcome to <div className="font-bold">AlgoKit 🙂</div>
+            Welcome to <div className="font-bold">The Dice Rolling Game! 🎲</div>
           </h1>
           <p className="py-6">
-            This starter has been generated using official AlgoKit React template. Refer to the resource below for next steps.
+              Press "Roll Dice" to roll the dice!
           </p>
 
           <div className="grid">
-            <a
+            <button
               data-test-id="getting-started"
               className="btn btn-primary m-2"
-              target="_blank"
-              href="https://github.com/algorandfoundation/algokit-cli"
+              onClick={toggleDiceRolling}
             >
-              Getting started
-            </a>
+              Roll Dice!
+            </button>
 
             <div className="divider" />
             <button data-test-id="connect-wallet" className="btn m-2" onClick={toggleWalletModal}>
@@ -56,17 +64,11 @@ const Home: React.FC<HomeProps> = () => {
                 Transactions Demo
               </button>
             )}
-
-            {activeAddress && (
-              <button data-test-id="appcalls-demo" className="btn m-2" onClick={toggleAppCallsModal}>
-                Contract Interactions Demo
-              </button>
-            )}
           </div>
 
           <ConnectWallet openModal={openWalletModal} closeModal={toggleWalletModal} />
           <Transact openModal={openDemoModal} setModalState={setOpenDemoModal} />
-          <AppCalls openModal={appCallsDemoModal} setModalState={setAppCallsDemoModal} />
+          <RollDice openModal={openDiceRolling} closeModal={setOpenDiceRolling} />
         </div>
       </div>
     </div>
