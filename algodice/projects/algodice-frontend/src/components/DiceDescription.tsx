@@ -13,7 +13,7 @@ const DiceDescription = () => {
 
   return (
     <div>
-      <div className="text-xl">Roll a dice! If the roll is greater than 3, you win! If the roll is less than 3, you lose.</div>
+      <div className="text-xl">Roll a dice! If the roll is greater than 3, you win! If the roll is less than or equal to 3, you lose.</div>
     </div>
   )
 }

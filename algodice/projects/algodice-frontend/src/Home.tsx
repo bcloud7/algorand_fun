@@ -8,15 +8,6 @@ import RollDice from './components/Dice'
 
 interface HomeProps {}
 
-function getRandomInt(min: number, max: number): number {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-const roll = getRandomInt(1, 6);
-console.log(`You rolled: ${roll}`);
-
 const Home: React.FC<HomeProps> = () => {
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false)
   const [openDemoModal, setOpenDemoModal] = useState<boolean>(false)

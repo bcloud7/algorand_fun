@@ -1,5 +1,6 @@
 import { useWallet, Wallet, WalletId } from '@txnlab/use-wallet-react'
 import DiceDescription from './DiceDescription'
+import confetti from 'canvas-confetti'
 
 interface DiceInterface {
   openModal: boolean
@@ -10,6 +11,15 @@ const RollDice = ({ openModal, closeModal }: DiceInterface) => {
   const { wallets, activeAddress } = useWallet()
 
   const isKmd = (wallet: Wallet) => wallet.id === WalletId.KMD
+
+  const triggerConfetti = () => {
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']
+    })
+  }
 
   return (
     <dialog id="connect_wallet_modal" className={`modal ${openModal ? 'modal-open' : ''}`} style={{ display: openModal ? 'block' : 'none' }}>
@@ -61,7 +71,13 @@ const RollDice = ({ openModal, closeModal }: DiceInterface) => {
               className="btn btn-warning"
               data-test-id="logout"
               onClick={async () => {
-                //dice
+                const roll = Math.floor(Math.random() * 6) + 1;
+                if (roll > 3) {
+                  console.log(`You rolled ${roll}! You Win!`);
+                  triggerConfetti();
+                } else if (roll <= 3) {
+                console.log(`You rolled ${roll}. You Lose.`);
+                }
               }}
             >
               Roll!!!
