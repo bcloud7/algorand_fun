@@ -1,0 +1,14 @@
+name: Pull Request validation
+
+on: [pull_request]
+
+
+jobs:
+  algodice-contracts-ci:
+    name: Run algodice-contracts validation
+    uses: ./.github/workflows/algodice-contracts-ci.yaml
+
+  algodice-frontend-ci:
+    name: Run algodice-frontend validation
+    uses: ./.github/workflows/algodice-frontend-ci.yaml
+

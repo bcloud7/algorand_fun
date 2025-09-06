@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+      - '.vscode/**'
+      - '.idea/**'
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  algodice-contracts-validate:
+    name: Run algodice-contracts release
+    secrets: inherit
+    uses: ./.github/workflows/algodice-contracts-ci.yaml
+
+  algodice-contracts-release:
+    name: Run algodice-contracts release
+    secrets: inherit
+    uses: ./.github/workflows/algodice-contracts-cd.yaml
+    needs: algodice-contracts-validate
+
+  algodice-frontend-validate:
+    name: Run algodice-frontend release
+    secrets: inherit
+    uses: ./.github/workflows/algodice-frontend-ci.yaml
+
+  algodice-frontend-release:
+    name: Run algodice-frontend release
+    secrets: inherit
+    uses: ./.github/workflows/algodice-frontend-cd.yaml
+    needs: algodice-frontend-validate
