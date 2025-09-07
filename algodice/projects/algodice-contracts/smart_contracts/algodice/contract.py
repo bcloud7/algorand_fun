@@ -9,10 +9,11 @@ from algopy import (
     arc4,
     gtxn,
     itxn,
+    op,
     subroutine,
     String,
 )
-
+# from lib_pcg import pcg128_init, pcg128_random
 from algopy.arc4 import abimethod
 
 
@@ -36,6 +37,11 @@ class Algodice(ARC4Contract):
         itxn.Payment(amount=send_amount, receiver=Txn.sender, fee=1000).submit()
 
         return String("You Win")
+
+    # @arc4.abimethod
+    # def reveal(self) -> String:
+    #     # TODO: use RANDOMNESS_BEACON example in https://github.com/CiottiGiorgio/verifiable-shuffle/blob/main/projects/verifiable-shuffle/smart_contracts/verifiable_shuffle/contract.py
+    #     state = pcg128_init()
 
 
     @abimethod()

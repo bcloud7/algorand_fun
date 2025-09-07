@@ -3,6 +3,7 @@ import { useWallet } from '@txnlab/use-wallet-react'
 import React, { useState } from 'react'
 import ConnectWallet from './components/ConnectWallet'
 import Transact from './components/Transact'
+import AppCalls from './components/AppCalls'
 import RollDice from './components/Dice'
 
 interface HomeProps {}
@@ -19,11 +20,16 @@ console.log(`You rolled: ${roll}`);
 const Home: React.FC<HomeProps> = () => {
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false)
   const [openDemoModal, setOpenDemoModal] = useState<boolean>(false)
+  const [appCallsDemoModal, setAppCallsDemoModal] = useState<boolean>(false)
   const [openDiceRolling, setOpenDiceRolling] = useState<boolean>(false)
   const { activeAddress } = useWallet()
 
   const toggleWalletModal = () => {
     setOpenWalletModal(!openWalletModal)
+  }
+
+  const toggleAppCallsModal = () => {
+    setAppCallsDemoModal(!appCallsDemoModal)
   }
 
   const toggleDemoModal = () => {
@@ -64,10 +70,17 @@ const Home: React.FC<HomeProps> = () => {
                 Transactions Demo
               </button>
             )}
+
+            {activeAddress && (
+              <button data-test-id="appcalls-demo" className="btn m-2" onClick={toggleAppCallsModal}>
+                Contract Interactions Demo
+              </button>
+            )}
           </div>
 
           <ConnectWallet openModal={openWalletModal} closeModal={toggleWalletModal} />
           <Transact openModal={openDemoModal} setModalState={setOpenDemoModal} />
+          <AppCalls openModal={appCallsDemoModal} setModalState={setAppCallsDemoModal} />
           <RollDice openModal={openDiceRolling} closeModal={setOpenDiceRolling} />
         </div>
       </div>

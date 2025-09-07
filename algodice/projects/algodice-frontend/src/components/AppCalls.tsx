@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { AlgodiceFactory } from '../contracts/Algodice'
 import { OnSchemaBreak, OnUpdate } from '@algorandfoundation/algokit-utils/types/app'
 import { getAlgodConfigFromViteEnvironment, getIndexerConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
-import { AlgorandClient } from '@algorandfoundation/algokit-utils'
+import { algo, AlgorandClient } from '@algorandfoundation/algokit-utils'
 
 interface AppCallsInterface {
   openModal: boolean
@@ -54,11 +54,26 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
 
     const { appClient } = deployResult
 
+    // Create a payment transaction to pay the bet amount
+      // This transaction is sent as a parameter to the roll transaction
+      const paymentTxn = await appClient.algorand.createTransaction.payment({
+        sender: activeAddress,
+        amount: algo(10),
+        receiver: appClient.appAddress,
+      })
+
+    const response = await appClient.send.rollAlwaysLose({ args: { pay: paymentTxn } }).catch((e: Error) => {
+      enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
+      setLoading(false)
+      return undefined
+    })
+/*
     const response = await appClient.send.hello({ args: { name: contractInput } }).catch((e: Error) => {
       enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
       setLoading(false)
       return undefined
     })
+    */
 
     if (!response) {
       return
