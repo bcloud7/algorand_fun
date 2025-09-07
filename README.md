@@ -1,8 +1,10 @@
 ## Demo Video
 
 https://youtu.be/h4UwmuwPLRg
+
+## video explaining how it works
 https://app.govideolink.com/videos/9nXrq28G9dSQVk0eYlnU/?utm_source=direct&utm_medium=invite_link
-video explaining how it works
+
 
 ## Screenshots 
 
