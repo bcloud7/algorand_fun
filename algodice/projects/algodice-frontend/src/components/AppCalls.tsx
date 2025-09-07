@@ -11,9 +11,10 @@ interface AppCallsInterface {
   alwaysWin: boolean
   alwaysLose: boolean
   setModalState: (value: boolean) => void
+  callbackAfterRoll: () => void
 }
 
-const AppCalls = ({ openModal, alwaysWin, alwaysLose, setModalState }: AppCallsInterface) => {
+const AppCalls = ({ openModal, alwaysWin, alwaysLose, setModalState, callbackAfterRoll }: AppCallsInterface) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [contractInput, setContractInput] = useState<string>('')
   const { enqueueSnackbar } = useSnackbar()
@@ -65,33 +66,30 @@ const AppCalls = ({ openModal, alwaysWin, alwaysLose, setModalState }: AppCallsI
       })
 
     let response = undefined
-    if (alwaysWin) {
+    const roll = Math.floor(Math.random() * 100)
+    const win = (alwaysWin || roll >= 50) && !alwaysLose
+    if (!alwaysWin && !alwaysLose) {
+      console.log(`You rolled: ${roll} ${win ? 'and win' : 'thus lose'}`)
+    }
+    if (win) {
       response = await appClient.send.rollAlwaysWin({ args: { pay: paymentTxn } }).catch((e: Error) => {
         enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
         setLoading(false)
         return undefined
       })
-    }
-    else if (alwaysLose) {
+    } else {
       response = await appClient.send.rollAlwaysLose({ args: { pay: paymentTxn } }).catch((e: Error) => {
         enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
         setLoading(false)
         return undefined
       })
     }
-/*
-    const response = await appClient.send.hello({ args: { name: contractInput } }).catch((e: Error) => {
-      enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
-      setLoading(false)
-      return undefined
-    })
-    */
 
     if (!response) {
       return
     }
-
     enqueueSnackbar(`Response from the contract: ${response.return}`, { variant: 'success' })
+    callbackAfterRoll()
     setLoading(false)
   }
 
@@ -113,8 +111,8 @@ const AppCalls = ({ openModal, alwaysWin, alwaysLose, setModalState }: AppCallsI
           <button className="btn" onClick={() => setModalState(!openModal)}>
             Cancel
           </button>
-          <button className={`btn`} onClick={sendAppCall}>
-            {loading ? <span className="loading loading-spinner" /> : 'Roll'}
+          <button className="btn btn-warning" onClick={sendAppCall}>
+            {loading ? <span className="loading loading-spinner" /> : 'ROLL'}
           </button>
         </div>
       </form>

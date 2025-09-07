@@ -58,7 +58,6 @@ const RollDice = ({ openModal, closeModal }: DiceInterface) => {
 
         <div className="modal-action grid">
           <button
-            data-test-id="close-wallet-modal"
             className="btn"
             onClick={() => {
               closeModal()
@@ -69,7 +68,6 @@ const RollDice = ({ openModal, closeModal }: DiceInterface) => {
           {activeAddress && (
             <button
               className="btn btn-warning"
-              data-test-id="logout"
               onClick={async () => {
                 const roll = Math.floor(Math.random() * 6) + 1;
                 if (roll > 3) {

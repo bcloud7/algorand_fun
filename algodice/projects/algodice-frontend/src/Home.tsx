@@ -19,7 +19,12 @@ const Home: React.FC<HomeProps> = () => {
   const [alwaysWin, setAlwaysWin] = useState<boolean>(false)
   const [alwaysLose, setAlwaysLose] = useState<boolean>(false)
   const { activeAddress } = useWallet()
-  const { accountInfo, loading: accountInfoLoading, error: ownedError, refresh: refreshAccountInfo } = useAccountInfo(appClient, activeAddress)
+  const {
+    accountInfo,
+    loading: accountInfoLoading,
+    error: accountInfoError,
+    refresh: refreshAccountInfo,
+  } = useAccountInfo(appClient, activeAddress)
 
   // --- Refresh account info when activeAddress changes ---
   useEffect(() => {
@@ -60,13 +65,12 @@ const Home: React.FC<HomeProps> = () => {
 
           <div className="grid">
             {activeAddress && (
-              <button
-                data-test-id="getting-started"
-                className="btn btn-primary m-2"
-                onClick={toggleDiceRolling}
-              >
-                Roll Dice!
-              </button>
+              <>
+                <div className="divider" />
+                <button data-test-id="getting-started" className="btn btn-primary m-2" onClick={() => toggleAppCallsModal(false, false)}>
+                  Roll Dice!
+                </button>
+              </>
             )}
 
             <div className="divider" />
@@ -76,12 +80,9 @@ const Home: React.FC<HomeProps> = () => {
 
             <div className="divider" />
 
-
             {activeAddress && (
               <>
-                <p className="py-6">
-                  Following options are for dev testing purpose
-                </p>
+                <p className="py-6">Following options are for dev testing purpose</p>
                 <button data-test-id="transactions-demo" className="btn m-2" onClick={toggleDemoModal}>
                   Transactions Demo
                 </button>
@@ -94,17 +95,29 @@ const Home: React.FC<HomeProps> = () => {
               </button>
             )}
 
-           {activeAddress && (
+            {activeAddress && (
               <button data-test-id="appcalls-demo" className="btn m-2" onClick={() => toggleAppCallsModal(true, false)}>
                 Roll to Win
+              </button>
+            )}
+
+            {activeAddress && (
+              <button data-test-id="effect demo" className="btn m-2" onClick={toggleDiceRolling}>
+                Roll Dice with effects
               </button>
             )}
           </div>
 
           <ConnectWallet openModal={openWalletModal} closeModal={toggleWalletModal} />
           <Transact openModal={openDemoModal} setModalState={setOpenDemoModal} />
-          <AppCalls openModal={appCallsDemoModal} alwaysWin={alwaysWin} alwaysLose={alwaysLose} setModalState={setAppCallsDemoModal} />
-          <RollDice openModal={openDiceRolling} closeModal={setOpenDiceRolling} />
+          <AppCalls
+            openModal={appCallsDemoModal}
+            alwaysWin={alwaysWin}
+            alwaysLose={alwaysLose}
+            setModalState={setAppCallsDemoModal}
+            callbackAfterRoll={refreshAccountInfo}
+          />
+          <RollDice openModal={openDiceRolling} closeModal={toggleDiceRolling} />
         </div>
       </div>
     </div>
