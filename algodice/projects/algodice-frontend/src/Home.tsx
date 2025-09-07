@@ -10,6 +10,11 @@ import { useAccountInfo } from './hooks/useAccountInfo'
 
 interface HomeProps {}
 
+interface DiceRecord {
+  amount: number
+  win: boolean
+}
+
 const Home: React.FC<HomeProps> = () => {
   const { appClient } = useAppClient()
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false)
@@ -18,6 +23,19 @@ const Home: React.FC<HomeProps> = () => {
   const [openDiceRolling, setOpenDiceRolling] = useState<boolean>(false)
   const [alwaysWin, setAlwaysWin] = useState<boolean>(false)
   const [alwaysLose, setAlwaysLose] = useState<boolean>(false)
+  const [records, setRecords] = React.useState<DiceRecord[]>([
+    // { amount: 10, win: true },
+    // { amount: 20, win: false },
+  ])
+
+  const addRecord = (amount: number, win: boolean) => {
+    const newRecord: DiceRecord = {
+      amount: amount,
+      win: win,
+    }
+    setRecords([newRecord, ...records ])
+  }
+
   const { activeAddress } = useWallet()
   const {
     accountInfo,
@@ -74,6 +92,19 @@ const Home: React.FC<HomeProps> = () => {
             )}
 
             <div className="divider" />
+            <h2 className="text-2xl">
+              Betting History
+            </h2>
+
+            <ul className="space-y-2">
+              {records.map((item) => (
+                <li className="flex justify-between items-center p-2 bg-white rounded-md shadow">
+                  Bet {item.amount} and {item.win ? 'Win!' : 'Lost...'}
+                </li>
+              ))}
+            </ul>
+            <div className="divider" />
+
             <button data-test-id="connect-wallet" className="btn m-2" onClick={toggleWalletModal}>
               Wallet Connection
             </button>
@@ -116,6 +147,7 @@ const Home: React.FC<HomeProps> = () => {
             alwaysLose={alwaysLose}
             setModalState={setAppCallsDemoModal}
             callbackAfterRoll={refreshAccountInfo}
+            addRecord={addRecord}
           />
           <RollDice openModal={openDiceRolling} closeModal={toggleDiceRolling} />
         </div>

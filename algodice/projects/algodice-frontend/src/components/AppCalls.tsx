@@ -13,18 +13,19 @@ interface AppCallsInterface {
   alwaysLose: boolean
   setModalState: (value: boolean) => void
   callbackAfterRoll: () => void
+  addRecord: (amount: number, win: boolean) => void
 }
 
-  const triggerConfetti = () => {
-    confetti({
-      particleCount: 150,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']
-    })
-  }
+const triggerConfetti = () => {
+  confetti({
+    particleCount: 150,
+    spread: 70,
+    origin: { y: 0.6 },
+    colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'],
+  })
+}
 
-const AppCalls = ({ openModal, alwaysWin, alwaysLose, setModalState, callbackAfterRoll }: AppCallsInterface) => {
+const AppCalls = ({ openModal, alwaysWin, alwaysLose, setModalState, callbackAfterRoll, addRecord }: AppCallsInterface) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [contractInput, setContractInput] = useState<string>('')
   const { enqueueSnackbar } = useSnackbar()
@@ -68,12 +69,12 @@ const AppCalls = ({ openModal, alwaysWin, alwaysLose, setModalState, callbackAft
     const { appClient } = deployResult
 
     // Create a payment transaction to pay the bet amount
-      // This transaction is sent as a parameter to the roll transaction
-      const paymentTxn = await appClient.algorand.createTransaction.payment({
-        sender: activeAddress,
-        amount: algo(Number(contractInput)),
-        receiver: appClient.appAddress,
-      })
+    // This transaction is sent as a parameter to the roll transaction
+    const paymentTxn = await appClient.algorand.createTransaction.payment({
+      sender: activeAddress,
+      amount: algo(Number(contractInput)),
+      receiver: appClient.appAddress,
+    })
 
     let response = undefined
     const roll = Math.floor(Math.random() * 100)
@@ -82,6 +83,7 @@ const AppCalls = ({ openModal, alwaysWin, alwaysLose, setModalState, callbackAft
       console.log(`You rolled: ${roll} ${win ? 'and win' : 'thus lose'}`)
     }
     if (win) {
+      addRecord(Number(contractInput), true)
       triggerConfetti()
       response = await appClient.send.rollAlwaysWin({ args: { pay: paymentTxn } }).catch((e: Error) => {
         enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
@@ -89,6 +91,7 @@ const AppCalls = ({ openModal, alwaysWin, alwaysLose, setModalState, callbackAft
         return undefined
       })
     } else {
+      addRecord(Number(contractInput), false)
       response = await appClient.send.rollAlwaysLose({ args: { pay: paymentTxn } }).catch((e: Error) => {
         enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
         setLoading(false)
@@ -102,6 +105,7 @@ const AppCalls = ({ openModal, alwaysWin, alwaysLose, setModalState, callbackAft
     enqueueSnackbar(`Response from the contract: ${response.return}`, { variant: 'success' })
     callbackAfterRoll()
     setLoading(false)
+    setModalState(!openModal)
   }
 
   return (
