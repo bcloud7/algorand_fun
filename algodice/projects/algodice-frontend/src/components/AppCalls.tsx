@@ -5,6 +5,7 @@ import { AlgodiceFactory } from '../contracts/Algodice'
 import { OnSchemaBreak, OnUpdate } from '@algorandfoundation/algokit-utils/types/app'
 import { getAlgodConfigFromViteEnvironment, getIndexerConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
 import { algo, AlgorandClient } from '@algorandfoundation/algokit-utils'
+import confetti from 'canvas-confetti'
 
 interface AppCallsInterface {
   openModal: boolean
@@ -13,6 +14,15 @@ interface AppCallsInterface {
   setModalState: (value: boolean) => void
   callbackAfterRoll: () => void
 }
+
+  const triggerConfetti = () => {
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']
+    })
+  }
 
 const AppCalls = ({ openModal, alwaysWin, alwaysLose, setModalState, callbackAfterRoll }: AppCallsInterface) => {
   const [loading, setLoading] = useState<boolean>(false)
@@ -72,6 +82,7 @@ const AppCalls = ({ openModal, alwaysWin, alwaysLose, setModalState, callbackAft
       console.log(`You rolled: ${roll} ${win ? 'and win' : 'thus lose'}`)
     }
     if (win) {
+      triggerConfetti()
       response = await appClient.send.rollAlwaysWin({ args: { pay: paymentTxn } }).catch((e: Error) => {
         enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
         setLoading(false)
