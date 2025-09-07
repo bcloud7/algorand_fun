@@ -1,14 +1,17 @@
 // src/components/Home.tsx
 import { useWallet } from '@txnlab/use-wallet-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ConnectWallet from './components/ConnectWallet'
 import Transact from './components/Transact'
 import AppCalls from './components/AppCalls'
 import RollDice from './components/Dice'
+import { useAppClient } from './context/AppClientContext'
+import { useAccountInfo } from './hooks/useAccountInfo'
 
 interface HomeProps {}
 
 const Home: React.FC<HomeProps> = () => {
+  const { appClient } = useAppClient()
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false)
   const [openDemoModal, setOpenDemoModal] = useState<boolean>(false)
   const [appCallsDemoModal, setAppCallsDemoModal] = useState<boolean>(false)
@@ -16,6 +19,12 @@ const Home: React.FC<HomeProps> = () => {
   const [alwaysWin, setAlwaysWin] = useState<boolean>(false)
   const [alwaysLose, setAlwaysLose] = useState<boolean>(false)
   const { activeAddress } = useWallet()
+  const { accountInfo, loading: accountInfoLoading, error: ownedError, refresh: refreshAccountInfo } = useAccountInfo(appClient, activeAddress)
+
+  // --- Refresh account info when activeAddress changes ---
+  useEffect(() => {
+    refreshAccountInfo()
+  }, [appClient, activeAddress, refreshAccountInfo])
 
   const toggleWalletModal = () => {
     setOpenWalletModal(!openWalletModal)
@@ -43,6 +52,11 @@ const Home: React.FC<HomeProps> = () => {
             Welcome to <div className="font-bold">Classic Dice Rolling Game! 🎲</div>
           </h1>
           <br />
+          {!accountInfoLoading && (
+            <h1 className="text-4xl">
+              Your account has <div className="font-bold">{accountInfo ? accountInfo.balance : 0}</div> Algos
+            </h1>
+          )}
 
           <div className="grid">
             {activeAddress && (
